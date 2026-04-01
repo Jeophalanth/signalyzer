@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fixed Canvas 1080x1920</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="scaler">
+        <div class="app-container">
+            <header class="header-bar">
+                <h1>SIGNALYZER</h1>
+            </header>
+
+            <div class="tab-system">
+                <button class="tab-button active">W.I.P.</button>
+                <button class="tab-button">SIGNAL</button>
+            </div>
+
+            <main class="content-area">
+                <div class="display-box">
+                    <span id="display-number">0</span>
+                </div>
+
+                <div class="multiplier-display">
+                    <span id="multiplier-text">n * 5</span>
+                </div>
+
+                <div class="slider-container">
+                    <input type="range" id="multiplier-slider" min="1" max="10" value="1" step="1">
+                        <div class="subdivisions">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                </div>
+
+               <div class="dynamic-text-area">
+    <p id="dynamic-msg">WAITING FOR ENTRY...</p>
+</div>
+
+<div class="button-grid">
+    <button class="num-btn" data-val="1">1</button>
+    <button class="num-btn" data-val="2">2</button>
+    <button class="num-btn" data-val="3">3</button>
+    <button class="num-btn" data-val="4">4</button>
+    <button class="num-btn" data-val="5">5</button>
+    <button class="num-btn" data-val="6">6</button>
+    <button class="num-btn" data-val="7">7</button>
+    <button class="num-btn" data-val="8">8</button>
+    <button class="num-btn" data-val="9">9</button>
+    <button class="num-btn btn-zero" data-val="0">0</button>
+    <button class="num-btn btn-delete" id="backspace">←</button>
+    <button class="num-btn btn-clear" id="clear-all">C</button>
+</div>
+            </main>
+        </div>
+    </div>
+    <script src="script/script.js"></script>
+</body>
+</html>
