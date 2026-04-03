@@ -1,107 +1,182 @@
-function fitToScreen() {
-    const scaler = document.getElementById('scaler');
-    if (!scaler) return;
-    const canvasWidth = 1080;
-    const canvasHeight = 1920;
-    const scaleX = window.innerWidth / canvasWidth;
-    const scaleY = window.innerHeight / canvasHeight;
-    const scale = Math.min(scaleX, scaleY);
-    scaler.style.transform = `scale(${scale})`;
+// ---------- CONFIG ----------
+const BASE_WIDTH = 1080;
+const BASE_HEIGHT = 1920;
+
+// ---------- DATA ----------
+const minerales = [
+	{ nombre: "Quantinium", firma: 3170 },
+	{ nombre: "Stileron", firma: 3185 },
+	{ nombre: "Savrilium", firma: 3200 },
+	{ nombre: "Ouratite", firma: 3370 },
+	{ nombre: "Riccite", firma: 3385 },
+	{ nombre: "Lindinium", firma: 3400 },
+	{ nombre: "Beryl", firma: 3540 },
+	{ nombre: "Taranite", firma: 3555 },
+	{ nombre: "Borase", firma: 3570 },
+	{ nombre: "Gold", firma: 3585 },
+	{ nombre: "Bexalite", firma: 3600 },
+	{ nombre: "Laranite", firma: 3825 },
+	{ nombre: "Aslarite", firma: 3840 },
+	{ nombre: "Titanium", firma: 3855 },
+	{ nombre: "Tunsteno", firma: 3870 },
+	{ nombre: "Agricium", firma: 3885 },
+	{ nombre: "Torite", firma: 3900 },
+	{ nombre: "Haphestanite", firma: 4180 },
+	{ nombre: "Tin", firma: 4195 },
+	{ nombre: "Quartz", firma: 4210 },
+	{ nombre: "Corundum", firma: 4225 },
+	{ nombre: "Copper", firma: 4240 },
+	{ nombre: "Silicon", firma: 4255 },
+	{ nombre: "Iron", firma: 4270 },
+	{ nombre: "Aluminium", firma: 4285 },
+	{ nombre: "Ice", firma: 4300 }
+];
+
+// ---------- STATE ----------
+const state = {
+	baseFirma: 0,
+	currentValue: 0
+};
+
+// ---------- DOM ----------
+const UI = {
+	app: document.querySelector('.app'),
+	display: document.getElementById('display-number'),
+	slider: document.getElementById('multiplier-slider'),
+	multiplierText: document.getElementById('multiplier-text'),
+	status: document.getElementById('dynamic-msg'),
+	keypad: document.querySelector('.keypad'),
+	tabs: document.querySelectorAll('.tabs__button'),
+	tableBody: document.getElementById('mining-body')
+};
+
+// ---------- UTILS ----------
+function formatMiles(num) {
+	return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-window.addEventListener('resize', fitToScreen);
-window.addEventListener('load', fitToScreen);
+// ---------- SCALE ----------
+function fitToScreen() {
+	const scale = Math.min(
+		window.innerWidth / BASE_WIDTH,
+		window.innerHeight / BASE_HEIGHT
+	);
+	UI.app.style.transform = `scale(${scale})`;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    const display = document.getElementById('display-number');
-    const slider = document.getElementById('multiplier-slider');
-    const multiplierText = document.getElementById('multiplier-text');
-    const infoBox = document.getElementById('dynamic-msg');
-    
-    let firmaBaseDetectada = 0;
+// ---------- LOGIC ----------
+function scanSignal() {
+	const value = state.currentValue;
+	let found = null;
+	let clusters = 0;
 
-    const minerales = [
-        { nombre: "Quantinium", firma: 3170 }, { nombre: "Stileron", firma: 3185 },
-        { nombre: "Savrilium", firma: 3200 }, { nombre: "Ouratite", firma: 3370 },
-        { nombre: "Riccite", firma: 3385 }, { nombre: "Gold Lindinium", firma: 3400 },
-        { nombre: "Beryl", firma: 3540 }, { nombre: "Taranite", firma: 3555 },
-        { nombre: "Borase", firma: 3570 }, { nombre: "Gold", firma: 3585 },
-        { nombre: "Bexalite", firma: 3600 }, { nombre: "Laranite", firma: 3825 },
-        { nombre: "Aslarite", firma: 3840 }, { nombre: "Titanium", firma: 3855 },
-        { nombre: "Tunsteno", firma: 3870 }, { nombre: "Agricium", firma: 3885 },
-        { nombre: "Torite", firma: 3900 }, { nombre: "Haphestanite", firma: 4180 },
-        { nombre: "Tin", firma: 4195 }, { nombre: "Quartz", firma: 4210 },
-        { nombre: "Corundum", firma: 4225 }, { nombre: "Copper", firma: 4240 },
-        { nombre: "Silicon", firma: 4255 }, { nombre: "Iron", firma: 4270 },
-        { nombre: "Aluminium", firma: 4285 }, { nombre: "Ice", firma: 4300 }
-    ];
+	if (value > 0) {
+		for (const mineral of minerales) {
+			for (let c = 1; c <= 12; c++) {
+				if (mineral.firma * c === value) {
+					found = mineral;
+					clusters = c;
+					break;
+				}
+			}
+			if (found) break;
+		}
+	}
 
-    function scanSignal() {
-        const n = parseInt(display.innerText);
-        let encontrado = null;
-        let clustersDetectados = 0;
+	if (found) {
+		state.baseFirma = found.firma;
+		UI.status.innerHTML = `<span style="color:#00ffcc">${found.nombre.toUpperCase()}!</span>`;
+		UI.slider.value = clusters;
+		updateDisplay();
+	} else {
+		state.baseFirma = 0;
+		UI.status.innerText = "WAITING FOR ENTRY...";
+	}
+}
 
-        if (n > 0) {
-            for (let m of minerales) {
-                for (let c = 1; c <= 12; c++) {
-                    if (m.firma * c === n) {
-                        encontrado = m;
-                        clustersDetectados = c;
-                        break;
-                    }
-                }
-                if (encontrado) break;
-            }
-        }
+function updateDisplay() {
+	const multiplier = Number(UI.slider.value);
+	UI.multiplierText.innerText = `CLUSTER: ${multiplier}`;
 
-        if (encontrado) {
-            firmaBaseDetectada = encontrado.firma;
-            infoBox.innerHTML = `<span style="color: #00ffcc; font-size: 70px; font-weight: bold;">${encontrado.nombre.toUpperCase()}!</span>`;
-            
-           slider.value = clustersDetectados;
-            updateFormula();
-        } else {
-            firmaBaseDetectada = 0;
-            infoBox.innerText = "ESPERANDO ENTRADA...";
-        }
-    }
+	if (state.baseFirma > 0) {
+		state.currentValue = state.baseFirma * multiplier;
+		UI.display.innerText = formatMiles(state.currentValue);
+	}
+}
 
-    function updateFormula() {
-        const x = parseInt(slider.value);
-        multiplierText.innerText = `n * ${x}`;
+// ---------- INPUT ----------
+function handleKeypad(e) {
+	const btn = e.target.closest('.key');
+	if (!btn) return;
 
-        if (firmaBaseDetectada > 0) {
-            display.innerText = firmaBaseDetectada * x;
-        }
-    }
+	// Número
+	if (btn.dataset.val !== undefined) {
+		const digit = btn.dataset.val;
+		let raw = String(state.currentValue || 0).replace(/\./g, '');
+        if (raw.length >=9) return;
+		raw = raw === "0" ? digit : raw + digit;
 
-    document.querySelectorAll('.num-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const val = btn.getAttribute('data-val');
-            if (val === null) return;
+		state.currentValue = Number(raw);
+		UI.display.innerText = formatMiles(state.currentValue);
+		scanSignal();
+	}
 
-            if (display.innerText === "0") display.innerText = val;
-            else if (display.innerText.length < 10) display.innerText += val;
-            
-            scanSignal(); 
-        });
-    });
+	// Delete
+	if (btn.classList.contains('key--delete')) {
+		let raw = String(state.currentValue || 0).replace(/\./g, '');
+		raw = raw.length > 1 ? raw.slice(0, -1) : "0";
 
-    slider.addEventListener('input', () => {
-        updateFormula();
-    });
+		state.currentValue = Number(raw);
+		UI.display.innerText = formatMiles(state.currentValue);
+		scanSignal();
+	}
 
-    document.getElementById('backspace').addEventListener('click', () => {
-        let current = display.innerText;
-        display.innerText = (current.length > 1) ? current.slice(0, -1) : "0";
-        scanSignal();
-    });
+	// Clear
+	if (btn.classList.contains('key--clear')) {
+		state.currentValue = 0;
+		state.baseFirma = 0;
+		UI.display.innerText = "0";
+		scanSignal();
+	}
+}
 
-    document.getElementById('clear-all').addEventListener('click', () => {
-        display.innerText = "0";
-        firmaBaseDetectada = 0;
-        scanSignal();
-    });
+// ---------- TABLE ----------
+function populateTable() {
+	UI.tableBody.innerHTML = '';
+	minerales.forEach(mineral => {
+		const row = document.createElement('tr');
+		row.innerHTML = `
+			<td>${mineral.nombre.toUpperCase()}</td>
+			<td>${formatMiles(mineral.firma)}</td>
+		`;
+		UI.tableBody.appendChild(row);
+	});
+}
 
-    updateFormula();
-});
+// ---------- TABS ----------
+function handleTabs() {
+	UI.tabs.forEach((tab, index) => {
+		tab.addEventListener('click', () => {
+			UI.tabs.forEach(t => t.classList.remove('tabs__button--active'));
+			tab.classList.add('tabs__button--active');
+
+			UI.app.classList.toggle('app--show-table', index === 0);
+		});
+	});
+}
+
+// ---------- INIT ----------
+function init() {
+	fitToScreen();
+	populateTable();
+	updateDisplay();
+
+	UI.keypad.addEventListener('click', handleKeypad);
+	UI.slider.addEventListener('input', updateDisplay);
+	UI.app.classList.add('app--show-table');
+
+	handleTabs();
+	window.addEventListener('resize', fitToScreen);
+}
+
+document.addEventListener('DOMContentLoaded', init);
