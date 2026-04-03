@@ -1,61 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fixed Canvas 1080x1920</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Signalyzer</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-    <div id="scaler">
-        <div class="app-container">
-            <header class="header-bar">
-                <h1>SIGNALYZER</h1>
-            </header>
+  <div class="app">
 
-            <div class="tab-system">
-                <button class="tab-button active">W.I.P.</button>
-                <button class="tab-button">SIGNAL</button>
-            </div>
+    <!-- Header -->
+    <header class="app__header">
+     <img src="imgs/LogoSignalyzer.png" alt="Logo" class="app__logo">
+      <h1 class="app__title">SIGNALYZER</h1>
+      <p class="app__version">0.2</p>
+    </header>
 
-            <main class="content-area">
-                <div class="display-box">
-                    <span id="display-number">0</span>
-                </div>
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button class="tabs__button tabs__button--active">SIGNAL</button>
+      <button class="tabs__button">ANALYZER</button>
+    </nav>
 
-                <div class="multiplier-display">
-                    <span id="multiplier-text">n * 5</span>
-                </div>
+    <!-- Tabla -->
+    <section class="data-table">
+      <table class="data-table__table">
+        <thead>
+          <tr>
+            <th>MINERAL</th>
+            <th>SIGNAL</th>
+          </tr>
+        </thead>
+        <tbody id="mining-body"></tbody>
+      </table>
+    </section>
 
-                <div class="slider-container">
-                    <input type="range" id="multiplier-slider" min="1" max="10" value="1" step="1">
-                        <div class="subdivisions">
-                            <span></span><span></span><span></span><span></span><span></span>
-                            <span></span><span></span><span></span><span></span><span></span>
-                        </div>
-                </div>
+    <!-- Contenido principal -->
+    <main class="app__main">
 
-               <div class="dynamic-text-area">
-    <p id="dynamic-msg">WAITING FOR ENTRY...</p>
-</div>
+      <!-- Display -->
+      <section class="display">
+        <span id="display-number" class="display__value">0</span>
+      </section>
 
-<div class="button-grid">
-    <button class="num-btn" data-val="1">1</button>
-    <button class="num-btn" data-val="2">2</button>
-    <button class="num-btn" data-val="3">3</button>
-    <button class="num-btn" data-val="4">4</button>
-    <button class="num-btn" data-val="5">5</button>
-    <button class="num-btn" data-val="6">6</button>
-    <button class="num-btn" data-val="7">7</button>
-    <button class="num-btn" data-val="8">8</button>
-    <button class="num-btn" data-val="9">9</button>
-    <button class="num-btn btn-zero" data-val="0">0</button>
-    <button class="num-btn btn-delete" id="backspace">←</button>
-    <button class="num-btn btn-clear" id="clear-all">C</button>
-</div>
-            </main>
+      <!-- Multiplier -->
+      <div class="multiplier">
+        <span id="multiplier-text" class="multiplier__text">CLUSTER: 5</span>
+      </div>
+
+      <!-- Slider -->
+      <div class="slider">
+        <input 
+          type="range" 
+          id="multiplier-slider" 
+          class="slider__input"
+          min="1" 
+          max="10" 
+          value="1" 
+          step="1"
+        >
+
+        <div class="slider__ticks">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
         </div>
-    </div>
-    <script src="script/script.js"></script>
+      </div>
+
+      <!-- Estado -->
+      <p id="dynamic-msg" class="status">
+        WAITING FOR ENTRY...
+      </p>
+
+      <!-- Keypad -->
+      <div class="keypad">
+
+        <!-- Números -->
+        <button class="key key--number" data-val="1">1</button>
+        <button class="key key--number" data-val="2">2</button>
+        <button class="key key--number" data-val="3">3</button>
+        <button class="key key--number" data-val="4">4</button>
+        <button class="key key--number" data-val="5">5</button>
+        <button class="key key--number" data-val="6">6</button>
+        <button class="key key--number" data-val="7">7</button>
+        <button class="key key--number" data-val="8">8</button>
+        <button class="key key--number" data-val="9">9</button>
+
+        <!-- Acciones -->
+        <button class="key key--number key--zero" data-val="0">0</button>
+        <button class="key key--action key--delete" id="backspace">←</button>
+        <button class="key key--action key--clear" id="clear-all">C</button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="script/script.js"></script>
 </body>
 </html>
